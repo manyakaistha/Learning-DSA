@@ -27,7 +27,12 @@ class BinaryTree:
                 self._insert_recursively(node.left, value)
 
     def search(self, value):
-        return self._search_recursively(self.root, value)
+        result = self._search_recursively(self.root, value)
+        if result:
+            print(f"Found value: {result.value}")
+        else:
+            print(f"Value {value} not found in the tree")
+        return result
 
     def _search_recursively(self, node, value):
         if node is None or node.value == value:
@@ -38,6 +43,38 @@ class BinaryTree:
         else:
             return self._search_recursively(node.right, value)
 
+    def preorder_traversal(self):
+        result = []
+        self._preorder_recursive(self.root, result)
+        return result
+
+    def _preorder_recursive(self, node, result):
+        if node:
+            result.append(node.value)
+            self._preorder_recursive(node.left, result)
+            self._preorder_recursive(node.right, result)
+
+    def inorder_traversal(self):
+        result = []
+        self._inorder_recursive(self.root, result)
+        return result
+
+    def _inorder_recursive(self, node, result):
+        if node:
+            self._inorder_recursive(node.left, result)
+            result.append(node.value)
+            self._inorder_recursive(node.right, result)
+
+    def postorder_traversal(self):
+        result = []
+        self._postorder_recursive(self.root, result)
+        return result
+
+    def _postorder_recursive(self, node, result):
+        if node:
+            self._postorder_recursive(node.left, result)
+            self._postorder_recursive(node.right, result)
+            result.append(node.value)
 
     def display(self):
         def _display_recursive(node, level=0, prefix="Root: "):
@@ -59,4 +96,9 @@ if __name__ == "__main__":
     for value in values:
         tree.insert(value)
 
+    tree.search(6)
+    tree.search(0)
     tree.display()
+    print(tree.preorder_traversal())
+    print(tree.inorder_traversal())
+    print(tree.postorder_traversal())
