@@ -168,6 +168,7 @@ if __name__ == "__main__":
 
     tree1.search(6)
     tree1.search(0)
+    tree1.search(3)
     tree1.display()
     print(tree1.preorder_traversal())
     print(tree1.inorder_traversal())
