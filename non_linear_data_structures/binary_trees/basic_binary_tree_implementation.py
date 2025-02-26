@@ -29,10 +29,9 @@ class BinaryTree:
     def search(self, value):
         result = self._search_recursively(self.root, value)
         if result:
-            print(f"Found value: {result.value}")
+           return result
         else:
-            print(f"Value {value} not found in the tree")
-        return result
+            return -1
 
     def _search_recursively(self, node, value):
         if node is None or node.value == value:
@@ -83,7 +82,6 @@ class BinaryTree:
     def _depth_recursively(self, node, value, dept):
         if node == None:
             return -1
-
         if node.value == value:
             return dept
 
@@ -92,39 +90,90 @@ class BinaryTree:
         else:
             return self._depth_recursively(node.right, value, dept + 1)
 
+    def height(self, value=None):
+        if value is None:
+            return self._height_recursively(self.root)
+        else:
+            node = self.search(value)
+            if node is None:
+                return -1
+            return self._height_recursively(node)
+
+    def _height_recursively(self, node):
+        if node == None:
+            return -1
+
+        left_height = self._height_recursively(node.left)
+        right_height = self._height_recursively(node.right)
+
+        return max(left_height, right_height) + 1
+
     def display(self):
         lines = self._display_recursive(self.root, 0)
         for line in lines:
             print(line)
+
+    def get_min(self):
+        if self.root == None:
+            return None
+        return self._get_min_recursively(self.root)
+   # this only works because this is a binary serch tree and the node are sorted
+    def _get_min_recursively(self, node):
+        if node.left is None:
+            return node.value
+        return self._get_min_recursively(node.left)
+
+    def is_identical(self, other_tree):
+        return self._is_identical_recursively(self.root, other_tree.root)
+
+    def _is_identical_recursively(self, node1, node2):
+        if node1 is None and node2 is None:
+            return True
+
+        if node1 is None or node2 is None:
+            return False
+
+        return (node1.value == node2.value and
+            self._is_identical_recursively(node1.left, node2.left) and
+            self._is_identical_recursively(node1.right, node2.right))
 
     def _display_recursive(self, node, level):
         if node is None:
             return []
 
         lines = []
-        # Recursively get right subtree lines first
         lines.extend(self._display_recursive(node.right, level + 1))
 
-        # Add current node
         lines.append('   ' * level + f'-> {node.value}')
 
-        # Then get left subtree lines
         lines.extend(self._display_recursive(node.left, level + 1))
 
         return lines
 
 if __name__ == "__main__":
-    tree = BinaryTree()
+    tree1 = BinaryTree()
+    values1 = [5, 3, 7, 1, 4, 6, 8]
+    for value in values1:
+        tree1.insert(value)
 
-    # Insert some values
-    values = [5, 3, 7, 1, 4, 6, 8]
-    for value in values:
-        tree.insert(value)
+    tree2 = BinaryTree()
+    values2 = [5, 3, 7, 1, 4, 6, 8]
+    for value in values2:
+        tree2.insert(value)
 
-    tree.search(6)
-    tree.search(0)
-    tree.display()
-    print(tree.preorder_traversal())
-    print(tree.inorder_traversal())
-    print(tree.postorder_traversal())
-    print(tree.depth(6))
+    tree3 = BinaryTree()
+    values3 = [5, 3, 7, 1, 4, 6, 9]
+    for value in values3:
+        tree3.insert(value)
+
+    tree1.search(6)
+    tree1.search(0)
+    tree1.display()
+    print(tree1.preorder_traversal())
+    print(tree1.inorder_traversal())
+    print(tree1.postorder_traversal())
+    print(tree1.depth(6))
+    print(tree1.height())
+    print(tree1.get_min())
+    print(tree1.is_identical(tree2))
+    print(tree3.is_identical(tree2))
