@@ -76,17 +76,42 @@ class BinaryTree:
             self._postorder_recursive(node.right, result)
             result.append(node.value)
 
-    def display(self):
-        def _display_recursive(node, level=0, prefix="Root: "):
-            if node is not None:
-                print("  " * level + prefix + str(node.value))
-                if node.left or node.right:
-                    if node.left:
-                        _display_recursive(node.left, level + 1, "L--- ")
-                    if node.right:
-                        _display_recursive(node.right, level + 1, "R--- ")
+    def depth(self, value):
+        result = self._depth_recursively(self.root, value, 0)
+        return result
 
-        _display_recursive(self.root)
+    def _depth_recursively(self, node, value, dept):
+        if node == None:
+            return -1
+
+        if node.value == value:
+            return dept
+
+        if value < node.value:
+            return self._depth_recursively(node.left, value, dept + 1)
+        else:
+            return self._depth_recursively(node.right, value, dept + 1)
+
+    def display(self):
+        lines = self._display_recursive(self.root, 0)
+        for line in lines:
+            print(line)
+
+    def _display_recursive(self, node, level):
+        if node is None:
+            return []
+
+        lines = []
+        # Recursively get right subtree lines first
+        lines.extend(self._display_recursive(node.right, level + 1))
+
+        # Add current node
+        lines.append('   ' * level + f'-> {node.value}')
+
+        # Then get left subtree lines
+        lines.extend(self._display_recursive(node.left, level + 1))
+
+        return lines
 
 if __name__ == "__main__":
     tree = BinaryTree()
@@ -102,3 +127,4 @@ if __name__ == "__main__":
     print(tree.preorder_traversal())
     print(tree.inorder_traversal())
     print(tree.postorder_traversal())
+    print(tree.depth(6))
