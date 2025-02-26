@@ -64,7 +64,7 @@ class BinaryTree:
             self._inorder_recursive(node.left, result)
             result.append(node.value)
             self._inorder_recursive(node.right, result)
-
+ 
     def postorder_traversal(self):
         result = []
         self._postorder_recursive(self.root, result)
