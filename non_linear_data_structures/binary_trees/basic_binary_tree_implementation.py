@@ -42,6 +42,7 @@ class BinaryTree:
         else:
             return self._search_recursively(node.right, value)
 
+    # DFS based traversal
     def preorder_traversal(self):
         result = []
         self._preorder_recursive(self.root, result)
@@ -74,6 +75,29 @@ class BinaryTree:
             self._postorder_recursive(node.left, result)
             self._postorder_recursive(node.right, result)
             result.append(node.value)
+
+    # BFS/Level Order Travarsal
+    def level_order_traversal(self):
+        if not self.root:
+            return []
+
+        result = []
+        queue = [(self.root, 0)]
+
+        while queue:
+            current, level = queue.pop(0)
+            if len(result) == level:
+                result.append([])
+
+            result[level].append(current.value)
+
+            if current.left:
+                queue.append((current.left, level + 1))
+
+            if current.right:
+                queue.append((current.right, level + 1))
+
+        return result
 
     def depth(self, value):
         result = self._depth_recursively(self.root, value, 0)
