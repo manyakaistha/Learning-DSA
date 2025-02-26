@@ -202,3 +202,4 @@ if __name__ == "__main__":
     print(tree1.get_min())
     print(tree1.is_identical(tree2))
     print(tree3.is_identical(tree2))
+    print(tree1.level_order_traversal())
