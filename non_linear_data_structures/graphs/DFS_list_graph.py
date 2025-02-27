@@ -16,9 +16,9 @@ def dfs_recursive(graph, start_vertex, visited=None):
 
     return traversal
 
-def dfs_iterative(graph, start_index):
+def dfs_iterative(graph, start_vertex):
     visited = set()
-    stack = [start_index]
+    stack = [start_vertex]
     traversal = []
 
     while stack:
@@ -33,3 +33,22 @@ def dfs_iterative(graph, start_index):
                     stack.append(neighbor)
 
     return traversal
+
+def dfs_path(graph, start_vertex, end_vertex, path=None, visited=None):
+    if path is None:
+        return []
+    if visited is None:
+        visited = set()
+
+    path.append(start_vertex)
+    visited.add(start_vertex)
+
+    if start_vertex == end_vertex:
+        return path
+
+    for neighbor in graph.graph[start_vertex]:
+        if neighbor not in visited:
+            new_path = dfs_path(graph, neighbor, end_vertex, path, visited)
+            if new_path:
+                return new_path
+    return None
