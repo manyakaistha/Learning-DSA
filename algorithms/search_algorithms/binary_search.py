@@ -13,7 +13,7 @@ def binary_serch_iterative(arr, target):
 
     return - 1
 
-def bianry_search_recursive(arr, target):
+def binary_search_recursive(arr, target):
     def binary_search(left, right):
         if left > right:
             return -1
