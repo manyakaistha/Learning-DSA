@@ -50,7 +50,7 @@ def cycle_path(graph, start_vertex):
 
         neighbors = graph.graph[vertex]
         for neighbor in neighbors:
-            # Handle both weighted and unweighted graphs
+            #this will handle both weighted and unweighted graphs
             if isinstance(neighbor, tuple):
                 neighbor_vertex = neighbor[0]
             else:
