@@ -19,3 +19,5 @@ def kahn_topological_sort(graph):
             in_degree[neighbor] -= 1
             if in_degree[neighbor] == 0:
                 queue.append(neighbor)
+                
+    return result

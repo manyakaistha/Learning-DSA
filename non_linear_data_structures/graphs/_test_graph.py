@@ -1,4 +1,4 @@
-from list_basic_graph_implementation import Graph
+from list_basic_graph_implementation import UnweightedGraph as Graph
 
 def create_simple_graph():
     """Returns a simple undirected graph with 5 vertices"""

@@ -11,7 +11,7 @@ def topological_sort(graph, start_vertex, visited=None, result=None):
 
     for neighbor in graph.graph[start_vertex]:
         if neighbor not in visited:
-           topological_sort(graph, start_vertex, visited, result)
+           topological_sort(graph, neighbor, visited, result)
 
     # result.insert(0, start_vertex) # This works but is ineffecient as we insert at the start of the list
     # return result
