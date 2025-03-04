@@ -22,9 +22,6 @@ class Solution:
 class Solution_Any_depth:
     def checkTree(self, root):
         def check_sum(node):
-            if not node:
-                return True
-
             if not node.left and not node.right:
                 return True
 
