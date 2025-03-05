@@ -32,6 +32,7 @@ from shortest_path_algorithm import shortest_path
 from shortest_path_algorithm_dijkstras_algorithm import dijkstra, get_shortest_path
 from topological_sort import topological_sort
 from topological_sort_kahns_algorithm import kahn_topological_sort
+from minimum_cost_spanning_tree_kruskals_algorithm import kruskals_mst, kruskals_mst_union_find
 
 
 def print_section_header(title):
@@ -157,8 +158,8 @@ def demo_shortest_path():
 
 
 def demo_minimum_spanning_tree():
-    """Demonstrate minimum spanning tree algorithm"""
-    print_section_header("Minimum Spanning Tree Algorithm")
+    """Demonstrate minimum spanning tree algorithms"""
+    print_section_header("Minimum Spanning Tree Algorithms")
     
     # Create weighted graph
     weighted_edges = create_weighted_graph()
@@ -169,7 +170,23 @@ def demo_minimum_spanning_tree():
     # Prim's Algorithm
     print_subsection_header("Prim's Algorithm")
     mst_edges, total_weight = prims_mst(weighted_graph)
-    print("Minimum Spanning Tree Edges:")
+    print("Minimum Spanning Tree Edges (Prim's):")
+    for edge in mst_edges:
+        print(f"  {edge[0]} -- {edge[1]} (weight: {edge[2]})")
+    print(f"Total MST Weight: {total_weight}")
+    
+    # Kruskal's Algorithm (without Union-Find)
+    print_subsection_header("Kruskal's Algorithm (without Union-Find)")
+    mst_edges, total_weight = kruskals_mst(weighted_graph.graph)
+    print("Minimum Spanning Tree Edges (Kruskal's):")
+    for edge in mst_edges:
+        print(f"  {edge[0]} -- {edge[1]} (weight: {edge[2]})")
+    print(f"Total MST Weight: {total_weight}")
+    
+    # Kruskal's Algorithm (with Union-Find)
+    print_subsection_header("Kruskal's Algorithm (with Union-Find)")
+    mst_edges, total_weight = kruskals_mst_union_find(weighted_graph)
+    print("Minimum Spanning Tree Edges (Kruskal's with Union-Find):")
     for edge in mst_edges:
         print(f"  {edge[0]} -- {edge[1]} (weight: {edge[2]})")
     print(f"Total MST Weight: {total_weight}")
