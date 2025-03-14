@@ -1,0 +1,1 @@
+# This file marks the minimum spanning tree algorithms directory as a Python package

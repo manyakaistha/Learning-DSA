@@ -10,7 +10,7 @@ It imports test graphs from _test_graph.py and runs different algorithms on them
 """
 
 # Import test graphs
-from _test_graph import (
+from tests._test_graph import (
     create_simple_graph,
     create_complex_graph,
     create_directed_acyclic_graph,
