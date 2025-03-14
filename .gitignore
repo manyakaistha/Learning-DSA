@@ -1,4 +1,28 @@
-__*
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual Environment
+venv/
+env/
+.env/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+.ropeproject/
+*.swp
+*.swo
+
+# System files
 .DS_Store
-.ropeproject
+Thumbs.db
 
