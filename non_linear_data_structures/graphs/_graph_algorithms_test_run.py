@@ -30,6 +30,8 @@ from list_basic_graph_implementation import WeightedGraph
 from minimum_spanning_tree_prims_algorithm import prims_mst
 from shortest_path_algorithm import shortest_path
 from shortest_path_algorithm_dijkstras_algorithm import dijkstra, get_shortest_path
+from shortest_path_algorithm_bellman_ford import bellman_ford, get_shortest_path_bellman_ford
+from shortest_path_algorithm_floyd_warshall import floyd_warshall, get_shortest_path_floyd_warshall
 from topological_sort import topological_sort
 from topological_sort_kahns_algorithm import kahn_topological_sort
 from minimum_cost_spanning_tree_kruskals_algorithm import kruskals_mst, kruskals_mst_union_find
@@ -210,6 +212,50 @@ def demo_topological_sort():
     print("Topological order (Kahn's):", sorted_vertices)
 
 
+def demo_advanced_shortest_path():
+    """Demonstrate advanced shortest path algorithms (Bellman-Ford and Floyd-Warshall)"""
+    print_section_header("Advanced Shortest Path Algorithms")
+    
+    # Create weighted graph with negative edges
+    weighted_edges = create_weighted_graph()
+    weighted_graph = WeightedGraph()
+    for v1, v2, weight in weighted_edges:
+        weighted_graph.add_edge(v1, v2, weight)
+    
+    # Add some negative edges for demonstration
+    weighted_graph.add_edge('A', 'B', -2)
+    weighted_graph.add_edge('B', 'C', -3)
+    
+    # Bellman-Ford Algorithm
+    print_subsection_header("Bellman-Ford Algorithm")
+    distances, predecessors, has_negative_cycle = bellman_ford(weighted_graph, 'A')
+    
+    if has_negative_cycle:
+        print("Graph contains a negative cycle!")
+    else:
+        print("Distances from 'A' to all vertices (Bellman-Ford):")
+        for vertex, distance in distances.items():
+            print(f"  {vertex}: {distance}")
+        
+        path = get_shortest_path_bellman_ford(predecessors, 'F')
+        print(f"Shortest path from 'A' to 'F': {path}")
+    
+    # Floyd-Warshall Algorithm
+    print_subsection_header("Floyd-Warshall Algorithm")
+    distances, predecessors = floyd_warshall(weighted_graph)
+    
+    if distances is None:
+        print("Graph contains a negative cycle!")
+    else:
+        print("All-pairs shortest distances:")
+        for u in weighted_graph.get_vertices():
+            for v in weighted_graph.get_vertices():
+                print(f"  {u} -> {v}: {distances[u][v]}")
+        
+        path = get_shortest_path_floyd_warshall(predecessors, 'A', 'F')
+        print(f"Shortest path from 'A' to 'F': {path}")
+
+
 def main():
     """Main function to run all demonstrations"""
     print("\n" + "*" * 100)
@@ -219,6 +265,7 @@ def main():
     demo_traversal_algorithms()
     demo_cycle_detection()
     demo_shortest_path()
+    demo_advanced_shortest_path()
     demo_minimum_spanning_tree()
     demo_topological_sort()
     

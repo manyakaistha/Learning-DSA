@@ -1,305 +1,300 @@
-# Comprehensive Graph Algorithms Guide
+# Graph Algorithms Bible
 
-## Theoretical Foundations of Graph Theory
+## Table of Contents
+1. [Introduction to Graphs](#introduction-to-graphs)
+   - What is a Graph?
+   - Types of Graphs
+   - Graph Representations
+   - Real-world Applications
 
-### 1. Mathematical Definition and Properties
+2. [Graph Implementation](#graph-implementation)
+   - Basic Graph Classes
+   - Weighted vs Unweighted Graphs
+   - Directed vs Undirected Graphs
+   - Implementation Analysis
 
-A graph G is formally defined as an ordered pair G = (V, E) where:
-- V is a set of vertices (also called nodes)
-- E is a set of edges, where each edge is a pair (u, v) of vertices
+3. [Graph Traversal Algorithms](#graph-traversal-algorithms)
+   - Breadth-First Search (BFS)
+   - Depth-First Search (DFS)
+   - Comparison and Use Cases
 
-In mathematical notation, we write G = (V, E) to represent a graph structure. This abstraction allows us to model complex relationships between entities in a wide variety of domains, from computer networks to social relationships.
+4. [Cycle Detection](#cycle-detection)
+   - In Directed Graphs
+   - In Undirected Graphs
+   - Universal Cycle Detection
+   - Applications and Examples
 
-#### 1.1 Essential Properties
+5. [Shortest Path Algorithms](#shortest-path-algorithms)
+   - Basic Shortest Path
+   - Dijkstra's Algorithm
+   - Bellman-Ford Algorithm
+   - Floyd-Warshall Algorithm
+   - Comparison and When to Use Each
 
-1. **Order of a Graph**: |V| - number of vertices
-   - Represents the total number of entities in the system being modeled
-   - Example: In a social network with 1 million users, |V| = 1,000,000
+6. [Minimum Spanning Trees](#minimum-spanning-trees)
+   - Prim's Algorithm
+   - Kruskal's Algorithm
+   - Union-Find Data Structure
+   - Applications
 
-2. **Size of a Graph**: |E| - number of edges
-   - Represents the total number of relationships in the system
-   - Example: In a road network, |E| would be the total number of road segments
+7. [Topological Sorting](#topological-sorting)
+   - DFS-based Approach
+   - Kahn's Algorithm
+   - Applications in Scheduling
 
-3. **Density**: The ratio of actual edges to potential edges
-   - For undirected graphs: 2|E| / (|V|(|V|-1))
-   - For directed graphs: |E| / (|V|(|V|-1))
-   - Sparse graphs: Density approaches 0 as |V| increases
-   - Dense graphs: Density approaches 1
-   - Complete graphs: Density = 1 (every possible edge exists)
+8. [Interview Questions and Practice Problems](#interview-questions)
+   - Common Graph Problems
+   - Solution Strategies
+   - Edge Cases
 
-4. **Degree of a Vertex**: Number of edges connected to a vertex
-   - For undirected graphs: deg(v) = number of adjacent vertices
-   - For directed graphs: 
-     - in-degree(v) = number of incoming edges
-     - out-degree(v) = number of outgoing edges
-     - total-degree(v) = in-degree(v) + out-degree(v)
+9. [Glossary](#glossary)
+   - Terms and Definitions
+   - Common Notations
 
-5. **Path**: A sequence of vertices where each adjacent pair is connected by an edge
-   - A path of length n contains n+1 vertices and n edges
-   - Simple path: No repeated vertices
-   - Cycle: Path that starts and ends at the same vertex
+## Introduction to Graphs
 
-6. **Connectivity**:
-   - Connected graph: There exists a path between any two vertices
-   - Strongly connected (directed graphs): There exists a directed path between any two vertices in both directions
-   - Weakly connected (directed graphs): The underlying undirected graph is connected
+### What is a Graph?
 
-### 2. Real-World Applications and Modeling
+A graph is a fundamental data structure that consists of a set of vertices (also called nodes) and a set of edges that connect these vertices. Think of it as a network of points connected by lines.
 
-Graphs serve as powerful mathematical models for various real-world systems:
+```
+Example Graph:
 
-#### 2.1 Social Networks
-- **Vertices**: Individual users/profiles
-- **Edges**: Relationships/connections
-- **Properties**: Often exhibits "small-world" characteristics
-- **Mathematical Model**: G = (U, F) where U is the set of users and F represents friendships
-- **Advanced Analysis**: 
-  - Community detection using clustering algorithms
-  - Influence propagation modeling
-  - Six degrees of separation phenomenon
-  - Centrality measures to identify key influencers
-
-#### 2.2 Transportation Networks
-- **Vertices**: Cities, intersections, airports
-- **Edges**: Roads, flight routes
-- **Weights**: Distances, travel times, costs
-- **Mathematical Model**: G = (L, R, W) where L is locations, R is routes, W is weights
-- **Practical Applications**:
-  - GPS navigation systems
-  - Traffic flow optimization
-  - Public transportation planning
-  - Supply chain logistics
-  - Emergency response routing
-
-#### 2.3 Computer Networks
-- **Vertices**: Devices, servers, routers
-- **Edges**: Physical or logical connections
-- **Weights**: Bandwidth, latency
-- **Mathematical Model**: G = (D, C, B) where D is devices, C is connections, B is bandwidth
-- **Network Analysis**:
-  - Routing protocol optimization
-  - Network reliability assessment
-  - Bottleneck identification
-  - Fault tolerance planning
-  - Security vulnerability mapping
-
-### 3. Graph Classifications and Properties
-
-#### 3.1 Directed vs Undirected Graphs
-
-```mermaid
-flowchart LR
-    subgraph "Directed Graph (Digraph)"
-    A1((A)) -->|"one-way"| B1((B))
-    end
-    subgraph "Undirected Graph"
-    A2((A)) ---|"two-way"| B2((B))
-    end
+A ---- B
+|      |
+|      |
+C ---- D
 ```
 
-**Mathematical Properties:**
-- Directed: E ⊆ V × V (ordered pairs)
-  - Relationships have direction (e.g., following someone on Twitter)
-  - Can model asymmetric relationships
-  - Applications: Web page links, email communications, citation networks
+In this simple example:
+- Vertices: A, B, C, D
+- Edges: (A,B), (A,C), (B,D), (C,D)
 
-- Undirected: E contains unordered pairs
-  - Relationships are bidirectional (e.g., friendship on Facebook)
-  - Symmetric by definition
-  - Applications: Road networks, physical infrastructure, mutual relationships
+### Types of Graphs
 
-**Formal Representation:**
-- Directed: Edge (u,v) ≠ Edge (v,u)
-- Undirected: Edge {u,v} = Edge {v,u}
+1. **Undirected Graph**
+   - Edges have no direction
+   - If A is connected to B, then B is connected to A
+   - Example: Social network friendships
 
-#### 3.2 Weighted vs Unweighted
+2. **Directed Graph (Digraph)**
+   - Edges have direction
+   - If A points to B, B might not point to A
+   - Example: Web pages and links
 
-**Formal Definition:**
-A weighted graph G = (V, E, w) where w: E → ℝ is a weight function
+3. **Weighted Graph**
+   - Edges have weights/costs
+   - Example: Road network with distances
 
-```mermaid
-flowchart LR
-    A((A)) --"5"-->B((B))
-    B --"3"-->C((C))
-    A --"2"-->C
-    style A fill:#f9f,stroke:#333
-    style B fill:#f96,stroke:#333
-    style C fill:#6f9,stroke:#333
+4. **Unweighted Graph**
+   - All edges have equal importance
+   - Example: Social connections
+
+### Graph Representations
+
+1. **Adjacency List**
+```python
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'D'],
+    'D': ['B', 'C']
+}
 ```
 
-**Characteristics:**
-- **Weighted Graphs**:
-  - Edges have associated values (weights)
-  - Weights can represent distance, cost, capacity, etc.
-  - Critical for optimization problems
-  - Examples: Road networks with distances, network links with bandwidth
+2. **Adjacency Matrix**
+```python
+#     A  B  C  D
+A = [[0, 1, 1, 0],  # A
+     [1, 0, 0, 1],  # B
+     [1, 0, 0, 1],  # C
+     [0, 1, 1, 0]]  # D
+```
 
-- **Unweighted Graphs**:
-  - All edges have equal importance
-  - Simpler to analyze for certain problems
-  - Can be viewed as weighted graphs where all weights = 1
-  - Examples: Social connections, binary relationships
+### Real-world Applications
 
-#### 3.3 Special Graph Types
+1. **Social Networks**
+   - Vertices: Users
+   - Edges: Friendships/Connections
 
-1. **Complete Graph (Kₙ)**:
-   - Every vertex is connected to every other vertex
-   - |E| = n(n-1)/2 for undirected graphs
-   - Density = 1
+2. **Transportation Networks**
+   - Vertices: Cities/Intersections
+   - Edges: Roads/Routes
+   - Weights: Distances/Travel Times
 
-2. **Bipartite Graph**:
-   - Vertices can be divided into two disjoint sets U and V
-   - Every edge connects a vertex in U to a vertex in V
-   - No edges within the same set
-   - Applications: Matching problems, assignment problems
+3. **Computer Networks**
+   - Vertices: Devices/Servers
+   - Edges: Connections
+   - Weights: Bandwidth/Latency
 
-3. **Tree**:
-   - Connected, undirected graph with no cycles
-   - |E| = |V| - 1
-   - Exactly one path between any two vertices
-   - Applications: Hierarchical structures, decision trees
+4. **Dependency Management**
+   - Vertices: Tasks/Modules
+   - Edges: Dependencies
+   - Example: Build systems, Package managers
 
-4. **Planar Graph**:
-   - Can be drawn on a plane with no edge crossings
-   - |E| ≤ 3|V| - 6 for |V| ≥ 3
-   - Applications: Circuit design, map coloring
+## Graph Implementation
 
-5. **DAG (Directed Acyclic Graph)**:
-   - Directed graph with no cycles
-   - Can be topologically sorted
-   - Applications: Scheduling, dependency resolution, version control
+### Basic Graph Classes
+
+In our implementation, we have two main graph classes: `UnweightedGraph` and `WeightedGraph`. Let's understand each in detail.
+
+#### UnweightedGraph Class
+
+The `UnweightedGraph` class represents a graph where edges don't have weights. This is useful for modeling simple connections, like social networks or basic routing problems.
+
+```python
+class UnweightedGraph:
+    def __init__(self, directed=False):
+        self.graph = {}
+        self.directed = directed
+```
+
+Key features:
+1. Uses adjacency list representation (dictionary of lists)
+2. Supports both directed and undirected graphs
+3. Simple and memory-efficient for sparse graphs
+
+Core methods:
+
+1. **add_vertex(vertex)**
+   - Adds a new vertex to the graph
+   - Creates an empty list for its neighbors
+
+2. **add_edge(vertex1, vertex2)**
+   - Adds an edge between two vertices
+   - For undirected graphs, adds both directions
+
+3. **remove_vertex(vertex)**
+   - Removes a vertex and all its edges
+   - Updates all affected adjacency lists
+
+4. **remove_edge(vertex1, vertex2)**
+   - Removes the edge between two vertices
+   - For undirected graphs, removes both directions
+
+#### WeightedGraph Class
+
+The `WeightedGraph` class extends the basic graph concept by adding weights to edges. This is essential for problems involving distances, costs, or capacities.
+
+```python
+class WeightedGraph:
+    def __init__(self, directed=False):
+        self.graph = {}
+        self.directed = directed
+```
+
+Key differences from UnweightedGraph:
+1. Edges store both destination and weight: `(vertex, weight)`
+2. Methods handle the additional weight parameter
+3. More suitable for algorithms like Dijkstra's or Prim's
+
+Core methods:
+
+1. **add_edge(vertex1, vertex2, weight)**
+   - Adds a weighted edge between vertices
+   - Weight represents cost/distance/capacity
+
+2. **get_weight(vertex1, vertex2)**
+   - Returns the weight of the edge
+   - Returns None if no edge exists
+
+### Implementation Analysis
+
+#### Time Complexity
+
+For a graph with V vertices and E edges:
+
+1. **Adjacency List (Our Implementation)**
+   - Add vertex: O(1)
+   - Add edge: O(1)
+   - Remove vertex: O(V + E)
+   - Remove edge: O(degree(v))
+   - Find edge: O(degree(v))
+   - Space: O(V + E)
+
+2. **Adjacency Matrix (Alternative)**
+   - Add vertex: O(V²)
+   - Add edge: O(1)
+   - Remove vertex: O(V²)
+   - Remove edge: O(1)
+   - Find edge: O(1)
+   - Space: O(V²)
+
+#### When to Use Each Implementation
+
+**Use Adjacency List (Our Implementation) when:**
+- The graph is sparse (E << V²)
+- You need to iterate over neighbors
+- Memory efficiency is important
+- You're implementing most graph algorithms
+
+**Use Adjacency Matrix when:**
+- The graph is dense (E ≈ V²)
+- You need constant-time edge lookups
+- The graph is small
+- You're doing matrix operations
+
+### Example Usage
+
+```python
+# Creating an undirected, unweighted graph
+ug = UnweightedGraph()
+ug.add_edge('A', 'B')
+ug.add_edge('B', 'C')
+ug.add_edge('C', 'A')
+
+# Creating a directed, weighted graph
+wg = WeightedGraph(directed=True)
+wg.add_edge('X', 'Y', 5)
+wg.add_edge('Y', 'Z', 3)
+wg.add_edge('Z', 'X', 4)
+```
+
+### Common Pitfalls
+
+1. **Forgetting Directionality**
+   - Always check if the graph is directed
+   - Handle both directions for undirected graphs
+
+2. **Edge Weight Handling**
+   - Validate weight values (negative weights can break some algorithms)
+   - Consider default weights for unweighted conversions
+
+3. **Vertex Existence**
+   - Check if vertices exist before operations
+   - Handle missing vertex cases gracefully
+
+4. **Memory Management**
+   - Be careful with large graphs
+   - Consider using more efficient data structures for specific cases
+
+### Interview Practice Questions
+
+1. **Basic Implementation**
+   Q: Implement a method to check if a graph is bipartite using the given graph class.
+   
+2. **Edge Cases**
+   Q: How would you modify the WeightedGraph class to support parallel edges?
+
+3. **Optimization**
+   Q: Design a memory-efficient representation for a complete graph.
+
+4. **Real-world Application**
+   Q: How would you extend the graph classes to support edge attributes beyond weights?
 
 ## Graph Traversal Algorithms
 
-### 1. Breadth-First Search (BFS)
+### Breadth-First Search (BFS)
 
-#### 1.1 Theoretical Foundation
+BFS is a traversal algorithm that explores a graph level by level, visiting all neighbors of a vertex before moving to the next level.
 
-BFS is based on the principle of level-order traversal, exploring all vertices at the current depth before moving to vertices at the next depth level. It uses a queue data structure to maintain the order of exploration.
-
-**Key Properties:**
-- Guarantees shortest path in unweighted graphs
-- Explores vertices in order of their distance from the source
-- Builds a breadth-first tree that preserves shortest paths
-- Useful for finding connected components
-
-**Time Complexity:** O(V + E)
-**Space Complexity:** O(V)
-
-#### 1.2 Algorithm Specification
-
-```python
-def bfs(graph: Dict[Any, List[Any]], start: Any) -> List[Any]:
-    """
-Performs Breadth-First Search traversal on a graph.
-    
-    Args:
-        graph: Dictionary representing adjacency list
-        start: Starting vertex
-        
-    Returns:
-        List of vertices in BFS order
-        
-    Time Complexity: O(V + E)
-    Space Complexity: O(V)
-    """
-    visited = set()          # O(1) initialization
-    queue = deque([start])   # O(1) initialization
-    result = []             # O(1) initialization
-    
-    while queue:            # O(V) iterations
-        current = queue.popleft()  # O(1) operation
-        
-        if current not in visited:
-            visited.add(current)    # O(1) operation
-            result.append(current)  # O(1) operation
-            
-            # Add all unvisited neighbors
-            for neighbor in graph[current]:  # O(E) total across all iterations
-                if neighbor not in visited:
-                    queue.append(neighbor)   # O(1) operation
-    
-    return result
-```
-
-**Implementation Details:**
-- The `visited` set ensures each vertex is processed exactly once
-- The queue enforces the level-order traversal property
-- Each edge is examined exactly once in an undirected graph, and at most twice in a directed graph
-
-#### 1.3 Step-by-Step Example
-
-Consider this graph:
-```mermaid
-flowchart TB
-    subgraph "Level 0"
-    A((A))
-    end
-    subgraph "Level 1"
-    B((B))
-    C((C))
-    end
-    subgraph "Level 2"
-    D((D))
-    E((E))
-    end
-    A --> B
-    A --> C
-    B --> D
-    C --> E
-    style A fill:#f9f,stroke:#333
-    style B fill:#f96,stroke:#333
-    style C fill:#f96,stroke:#333
-    style D fill:#6f9,stroke:#333
-    style E fill:#6f9,stroke:#333
-```
-
-Detailed execution trace:
-1. Start at A:
-   - Queue: [A]
-   - Visited: {}
-   - Result: []
-
-2. Process A:
-   - Queue: [B, C]
-   - Visited: {A}
-   - Result: [A]
-
-3. Process B (first neighbor of A):
-   - Queue: [C, D]
-   - Visited: {A, B}
-   - Result: [A, B]
-
-4. Process C (second neighbor of A):
-   - Queue: [D, E]
-   - Visited: {A, B, C}
-   - Result: [A, B, C]
-
-5. Process D (neighbor of B):
-   - Queue: [E]
-   - Visited: {A, B, C, D}
-   - Result: [A, B, C, D]
-
-6. Process E (neighbor of C):
-   - Queue: []
-   - Visited: {A, B, C, D, E}
-   - Result: [A, B, C, D, E]
-
-7. Queue is empty, algorithm terminates
-   - Final result: [A, B, C, D, E]
-
-#### 1.4 Real Implementation Analysis
-
-From the actual implementation in `BFS_list_graph.py`:
+#### Algorithm Overview
 
 ```python
 def bfs(graph, start_vertex):
-    if start_vertex not in graph.graph:
-        return []
-
     visited = set()
     queue = deque([start_vertex])
-    visited.add(start_vertex)  # Note: Mark as visited when added to queue
+    visited.add(start_vertex)
     traversal_order = []
 
     while queue:
@@ -314,475 +309,832 @@ def bfs(graph, start_vertex):
     return traversal_order
 ```
 
-Key differences from the pseudocode:
-1. Vertices are marked as visited when they're added to the queue, not when processed
-2. Input validation to handle non-existent start vertices
-3. The implementation handles the graph as an object with a `.graph` attribute
+#### How BFS Works
 
-### 2. Depth-First Search (DFS)
+1. Start at a given vertex
+2. Visit all its neighbors
+3. For each neighbor, visit their unvisited neighbors
+4. Continue until all reachable vertices are visited
 
-#### 2.1 Theoretical Foundation
+Example:
+```
+Graph:          BFS from A:
+A --- B         Level 0: A
+|     |         Level 1: B, C
+C --- D         Level 2: D
 
-DFS explores as far as possible along each branch before backtracking, following the principle of exploring depth before breadth. It can be implemented recursively (using the call stack) or iteratively (using an explicit stack).
-
-**Key Properties:**
-- Useful for topological sorting, cycle detection, and connected component analysis
-- Explores all possible paths from source to destination
-- Memory-efficient for deep graphs
-- Forms a depth-first forest
-
-**Time Complexity:** O(V + E)
-**Space Complexity:** O(V) - worst case for recursive call stack
-
-#### 2.2 Algorithm Specification
-
-```python
-def dfs_recursive(graph: Dict[Any, List[Any]], 
-                  node: Any,
-                  visited: Set[Any] = None,
-                  path: List[Any] = None) -> List[Any]:
-    """
-Performs Depth-First Search traversal recursively.
-    
-    Args:
-        graph: Dictionary representing adjacency list
-        node: Current vertex
-        visited: Set of visited vertices
-        path: List to store traversal order
-        
-    Returns:
-        List of vertices in DFS order
-        
-    Time Complexity: O(V + E)
-    Space Complexity: O(V) - due to recursion stack
-    """
-    # Initialize on first call
-    if visited is None:
-        visited = set()
-    if path is None:
-        path = []
-    
-    # Process current node
-    visited.add(node)    # O(1) operation
-    path.append(node)    # O(1) operation
-    
-    # Recursively process neighbors
-    for neighbor in graph[node]:  # O(E) total across all calls
-        if neighbor not in visited:
-            dfs_recursive(graph, neighbor, visited, path)
-    
-    return path
+Traversal Order: A -> B -> C -> D
 ```
 
-**Implementation Details:**
-- The recursive approach leverages the system's call stack
-- Each vertex is visited exactly once
-- The recursion depth can be at most V (in the case of a linear graph)
-- Default parameters allow for clean initial calls
+#### Applications
 
-#### 2.3 Iterative Implementation
+1. **Shortest Path (Unweighted)**
+   - Finding shortest path in unweighted graphs
+   - Each level represents distance from start
+
+2. **Level Order Traversal**
+   - Web crawling (level = clicks from start)
+   - Social network connections (friend levels)
+
+3. **Connected Components**
+   - Finding all nodes reachable from a start point
+   - Network analysis
+
+### Depth-First Search (DFS)
+
+DFS explores a graph by going as deep as possible along each branch before backtracking.
+
+#### Algorithm Overview
 
 ```python
-def dfs_iterative(graph: Dict[Any, List[Any]], start: Any) -> List[Any]:
-    """Performs Depth-First Search traversal iteratively.
-    
-    Args:
-        graph: Dictionary representing adjacency list
-        start: Starting vertex
-        
-    Returns:
-        List of vertices in DFS order
-        
-    Time Complexity: O(V + E)
-    Space Complexity: O(V)
-    """
+def dfs_recursive(graph, start_vertex, visited=None):
+    if visited is None:
+        visited = set()
+
+    visited.add(start_vertex)
+    traversal = [start_vertex]
+
+    for neighbor in graph.graph[start_vertex]:
+        if neighbor not in visited:
+            traversal.extend(dfs_recursive(graph, neighbor, visited))
+
+    return traversal
+```
+
+#### How DFS Works
+
+1. Start at a given vertex
+2. Recursively visit an unvisited neighbor
+3. Backtrack when no unvisited neighbors remain
+4. Continue until all reachable vertices are visited
+
+Example:
+```
+Graph:          DFS from A:
+A --- B         Path: A → B → D → C
+|     |         
+C --- D         Stack: [A] → [A,B] → [A,B,D] → [A,B,D,C]
+
+Traversal Order: A -> B -> D -> C
+```
+
+#### Applications
+
+1. **Cycle Detection**
+   - Finding cycles in graphs
+   - Detecting back edges
+
+2. **Topological Sorting**
+   - Dependency resolution
+   - Task scheduling
+
+3. **Path Finding**
+   - Maze solving
+   - Game state exploration
+
+### BFS vs DFS Comparison
+
+#### Time and Space Complexity
+
+Both BFS and DFS:
+- Time: O(V + E) where V = vertices, E = edges
+- Space: O(V) for visited set and queue/stack
+
+#### When to Use Each
+
+**Use BFS when:**
+- Finding shortest paths in unweighted graphs
+- Level-by-level exploration is needed
+- Target is likely closer to start
+- Memory is not a constraint
+
+**Use DFS when:**
+- Exploring all possible paths
+- Memory is limited (can be implemented with recursion)
+- Target is likely far from start
+- Topological sorting is needed
+
+### Interview Practice Questions
+
+1. **Path Finding**
+   Q: Given a 2D grid with obstacles, find the shortest path from start to end using BFS.
+
+2. **Graph Properties**
+   Q: Use DFS to determine if a graph is bipartite.
+
+3. **Optimization**
+   Q: Implement an iterative version of DFS without using recursion.
+
+4. **Real-world Application**
+   Q: How would you use BFS to find all users within N degrees of connection in a social network?
+
+## Cycle Detection
+
+### Understanding Cycles
+
+A cycle in a graph is a path that starts and ends at the same vertex. Cycle detection is crucial for many applications, from detecting deadlocks to finding redundant dependencies.
+
+### In Directed Graphs
+
+Detecting cycles in directed graphs requires tracking vertices in the current recursion stack.
+
+#### Algorithm Overview
+
+```python
+def is_cyclic(graph, start_vertex, visiting=None, visited=None):
+    if visiting is None:
+        visiting = set()
+    if visited is None:
+        visited = set()
+
+    visiting.add(start_vertex)
+
+    for neighbor in graph.graph[start_vertex]:
+        if neighbor in visiting:
+            return True
+        if neighbor not in visited:
+            if is_cyclic(graph, neighbor, visiting, visited):
+                return True
+
+    visiting.remove(start_vertex)
+    visited.add(start_vertex)
+    return False
+```
+
+#### How It Works
+
+1. Maintain two sets:
+   - `visiting`: Vertices in current DFS path
+   - `visited`: All processed vertices
+
+2. For each vertex:
+   - Mark it as 'visiting'
+   - Explore its neighbors
+   - If we find a 'visiting' neighbor, we found a cycle
+   - After processing, mark as 'visited'
+
+Example:
+```
+Directed Graph:    DFS Path:
+1 → 2 → 3         1 → 2 → 3 → 4
+    ↑   ↓         Found cycle when
+    4 ← 5         reaching 2 again
+```
+
+### In Undirected Graphs
+
+Undirected cycle detection is simpler but requires tracking parent vertices to avoid false cycles.
+
+#### Algorithm Overview
+
+```python
+def detect_cycle_undirected(graph):
     visited = set()
-    stack = [start]
-    path = []
-    
-    while stack:  # O(V) iterations
-        node = stack.pop()  # O(1) operation
-        
-        if node not in visited:
-            visited.add(node)    # O(1) operation
-            path.append(node)    # O(1) operation
-            
-            # Add neighbors in reverse order
-            for neighbor in reversed(graph[node]):  # O(E) total
-                if neighbor not in visited:
-                    stack.append(neighbor)  # O(1) operation
-    
-    return path
+
+    def dfs(vertex, parent):
+        visited.add(vertex)
+        for neighbor in graph.graph[vertex]:
+            if neighbor == parent:
+                continue
+            if neighbor in visited:
+                return True
+            if dfs(neighbor, vertex):
+                return True
+        return False
+
+    for vertex in graph.graph:
+        if vertex not in visited:
+            if dfs(vertex, None):
+                return True
+    return False
 ```
 
-#### 2.4 Comparative Analysis
+#### How It Works
 
-Let's analyze a sample graph:
-```mermaid
-flowchart TB
-    A((A)) --> B((B))
-    A --> C((C))
-    B --> D((D))
-    B --> E((E))
-    style A fill:#f9f,stroke:#333
-    style B fill:#f96,stroke:#333
-    style C fill:#6f9,stroke:#333
-    style D fill:#96f,stroke:#333
-    style E fill:#96f,stroke:#333
+1. Use DFS traversal
+2. Track parent vertex to avoid false cycles
+3. If we find a visited non-parent neighbor, we found a cycle
+
+Example:
+```
+Undirected Graph:  DFS Path:
+A --- B           A → B → C
+|     |          Found cycle when
+C --- D          reaching A from C
 ```
 
-Recursive DFS Trace:
-1. Visit A → push to stack
-2. Visit B (A's first neighbor)
-3. Visit D (B's first neighbor)
-4. Backtrack to B (D has no unvisited neighbors)
-5. Visit E (B's second neighbor)
-6. Backtrack to A (B has no more unvisited neighbors)
-7. Visit C (A's second neighbor)
+### Universal Cycle Detection
 
-### 3. Advanced Applications
-
-#### 3.1 Social Network Analysis
+Our universal cycle detection works for both directed and undirected graphs.
 
 ```python
-# Example: Finding all friends within 2 degrees
-def find_friends_of_friends(network, start_user):
-    """Finds all friends and friends-of-friends.
-    
-    Args:
-        network: Social network graph
-        start_user: Starting user
-        
-    Returns:
-        Dict with degrees of connection
-    """
-    degrees = {start_user: 0}
-    queue = deque([(start_user, 0)])
-    
-    while queue:
-        user, degree = queue.popleft()
-        
-        if degree < 2:  # Only explore up to friends-of-friends
-            for friend in network[user]:
-                if friend not in degrees:
-                    degrees[friend] = degree + 1
-                    queue.append((friend, degree + 1))
-    
-    return degrees
-
-# Example usage
-network = {
-    'Alice': ['Bob', 'Charlie'],
-    'Bob': ['Alice', 'David'],
-    'Charlie': ['Alice', 'Eve'],
-    'David': ['Bob'],
-    'Eve': ['Charlie']
-}
-
-connections = find_friends_of_friends(network, 'Alice')
-# Result: {'Alice': 0, 'Bob': 1, 'Charlie': 1, 'David': 2, 'Eve': 2}
-```
-
-#### 3.2 Maze Solving
-
-```python
-def solve_maze(maze, start, end, path=None):
-    """Solves a maze using DFS.
-    
-    Args:
-        maze: Dictionary representing possible moves
-        start: Starting position
-        end: Target position
-        path: Current path being explored
-        
-    Returns:
-        List representing solution path, or None if no solution
-    """
-    if path is None:
-        path = []
-    
-    path.append(start)
-    
-    if start == end:
-        return path
-    
-    for next_pos in maze[start]:
-        if next_pos not in path:
-            solution = solve_maze(maze, next_pos, end, path.copy())
-            if solution:
-                return solution
-    
-    return None
-
-# Example usage
-maze = {
-    'Start': ['A', 'B'],
-    'A': ['Start', 'C'],
-    'B': ['Start', 'D'],
-    'C': ['A', 'End'],
-    'D': ['B', 'End'],
-    'End': ['C', 'D']
-}
-
-solution = solve_maze(maze, 'Start', 'End')
-# Possible result: ['Start', 'A', 'C', 'End']
-```
-
-### 4. Debugging and Optimization Tips
-
-#### 4.1 Common Implementation Pitfalls
-
-1. **Infinite Loops**
-   - Always maintain a visited set
-   - Ensure proper neighbor handling
-
-2. **Memory Leaks**
-   - Clear data structures after use
-   - Use appropriate data structure sizes
-
-#### 4.2 Performance Optimization
-
-1. **Space Optimization**
-   ```python
-   # Instead of storing full paths
-   parent = {start: None}  # Store parent references
-   
-   # Reconstruct path when needed
-   def get_path(end):
-       path = []
-       current = end
-       while current is not None:
-           path.append(current)
-           current = parent[current]
-       return path[::-1]
-   ```
-
-2. **Time Optimization**
-   ```python
-   # Use set for O(1) lookup
-   visited = set()
-   
-   # Use deque for O(1) append/pop
-   from collections import deque
-   queue = deque()
-   ```
-
-Remember: The choice between BFS and DFS often depends on the specific problem requirements and constraints. BFS is typically better for shortest path problems in unweighted graphs, while DFS is often preferred for exhaustive search problems and topological sorting.
-
-## Advanced Graph Algorithms
-
-### 1. Topological Sorting
-
-#### 1.1 Theoretical Foundation
-
-Topological sorting is a linear ordering of vertices in a directed acyclic graph (DAG) such that for every directed edge u→v, vertex u comes before v in the ordering.
-
-**Applications:**
-- Task scheduling
-- Build systems
-- Course prerequisites
-
-**Implementation Files:**
-- Basic DFS-based implementation: `topological_sort.py`
-- Kahn's Algorithm implementation: `topological_sort_kahns_algorithm.py`
-
-#### 1.2 Algorithm Variants
-
-##### A. DFS-Based Approach
-```python
-def topological_sort(graph, start, visited=None, stack=None):
-    """DFS-based topological sort.
-    
-    Time Complexity: O(V + E)
-    Space Complexity: O(V)
-    """
+def is_cyclic_universal(graph, start_vertex, visiting=None, visited=None, parent=None):
+    if visiting is None:
+        visiting = set()
     if visited is None:
         visited = set()
-    if stack is None:
-        stack = []
-    
-    visited.add(start)
-    
-    for neighbor in graph[start]:
-        if neighbor not in visited:
-            topological_sort(graph, neighbor, visited, stack)
-    
-    stack.insert(0, start)
-    return stack
-```
 
-##### B. Kahn's Algorithm
-```python
-def kahn_topological_sort(graph):
-    """Kahn's algorithm for topological sorting.
-    
-    Time Complexity: O(V + E)
-    Space Complexity: O(V)
-    """
-    in_degree = {node: 0 for node in graph}
-    for node in graph:
-        for neighbor in graph[node]:
-            in_degree[neighbor] += 1
-    
-    queue = deque([node for node in in_degree if in_degree[node] == 0])
-    result = []
-    
-    while queue:
-        node = queue.popleft()
-        result.append(node)
-        
-        for neighbor in graph[node]:
-            in_degree[neighbor] -= 1
-            if in_degree[neighbor] == 0:
-                queue.append(neighbor)
-    
-    return result
-```
+    visiting.add(start_vertex)
 
-### 2. Minimum Spanning Tree (MST)
-
-#### 2.1 Theoretical Foundation
-
-A minimum spanning tree is a subset of edges that connects all vertices with minimum total edge weight.
-
-**Implementation Files:**
-- Prim's Algorithm: `minimum_spanning_tree_prims_algorithm.py`
-- Kruskal's Algorithm: `minimum_cost_spanning_tree_kruskals_algorithm.py`
-
-#### 2.2 Algorithm Variants
-
-##### A. Prim's Algorithm
-```python
-def prims_mst(graph):
-    """Prim's algorithm for MST.
-    
-    Time Complexity: O(E log V)
-    Space Complexity: O(V)
-    """
-    start_vertex = list(graph.graph.keys())[0]
-    mst_edges = []
-    visited = {start_vertex}
-    edges = [
-        (weight, start_vertex, to)
-        for to, weight in graph.graph[start_vertex].items()
-    ]
-    heapq.heapify(edges)
-    
-    while edges:
-        weight, frm, to = heapq.heappop(edges)
-        if to not in visited:
-            visited.add(to)
-            mst_edges.append((frm, to, weight))
-            
-            for next_vertex, next_weight in graph.graph[to].items():
-                if next_vertex not in visited:
-                    heapq.heappush(edges, (next_weight, to, next_vertex))
-    
-    return mst_edges
-```
-
-##### B. Kruskal's Algorithm
-```python
-def kruskals_mst(graph):
-    """Kruskal's algorithm for MST.
-    
-    Time Complexity: O(E log E)
-    Space Complexity: O(V)
-    """
-    edges = []
-    for u in graph:
-        for v, weight in graph[u].items():
-            edges.append((weight, u, v))
-    
-    edges.sort()
-    parent = {vertex: vertex for vertex in graph}
-    mst = []
-    
-    def find(vertex):
-        if parent[vertex] != vertex:
-            parent[vertex] = find(parent[vertex])
-        return parent[vertex]
-    
-    def union(u, v):
-        parent[find(u)] = find(v)
-    
-    for weight, u, v in edges:
-        if find(u) != find(v):
-            union(u, v)
-            mst.append((u, v, weight))
-    
-    return mst
-```
-
-### 3. Shortest Path Algorithms
-
-#### 3.1 Theoretical Foundation
-
-Shortest path algorithms find the path between vertices where the sum of edge weights is minimized.
-
-**Implementation Files:**
-- Basic implementation: `shortest_path_algorithm.py`
-- Dijkstra's Algorithm: `shortest_path_algorithm_dijkstras_algorithm.py`
-
-#### 3.2 Algorithm Variants
-
-##### A. Dijkstra's Algorithm
-```python
-def dijkstra(graph, start):
-    """Dijkstra's shortest path algorithm.
-    
-    Time Complexity: O((V + E) log V)
-    Space Complexity: O(V)
-    """
-    distances = {vertex: float('infinity') for vertex in graph.graph}
-    distances[start] = 0
-    pq = [(0, start)]
-    predecessors = {vertex: None for vertex in graph.graph}
-    
-    while pq:
-        current_distance, current_vertex = heapq.heappop(pq)
-        
-        if current_distance > distances[current_vertex]:
+    for neighbor in graph.graph[start_vertex]:
+        if not graph.directed and neighbor == parent:
             continue
-            
-        for neighbor, weight in graph.graph[current_vertex].items():
+        if neighbor in visiting:
+            return True
+        if neighbor not in visited:
+            if is_cyclic_universal(graph, neighbor, visiting, visited, start_vertex):
+                return True
+
+    visiting.remove(start_vertex)
+    visited.add(start_vertex)
+    return False
+```
+
+### Applications and Examples
+
+1. **Deadlock Detection**
+   - Resource allocation graphs
+   - Process dependencies
+
+2. **Dependency Analysis**
+   - Package dependencies
+   - Build systems
+
+3. **Circuit Analysis**
+   - Finding feedback loops
+   - Electronic circuit verification
+
+### Time and Space Complexity
+
+- Time: O(V + E)
+  - We visit each vertex once
+  - We explore each edge once
+
+- Space: O(V)
+  - For visited and visiting sets
+  - Recursion stack in worst case
+
+### Interview Practice Questions
+
+1. **Basic Implementation**
+   Q: Implement a function to find and print all cycles in a directed graph.
+
+2. **Edge Cases**
+   Q: How would you modify the cycle detection algorithm to work with weighted edges?
+
+3. **Optimization**
+   Q: Design an algorithm to find the shortest cycle in an undirected graph.
+
+4. **Real-world Application**
+   Q: How would you use cycle detection to find circular dependencies in a software project?
+
+## Shortest Path Algorithms
+
+### Overview
+
+Shortest path algorithms find the minimum cost path between vertices in a graph. Different algorithms handle different scenarios:
+
+- Basic Shortest Path: For unweighted or simple weighted graphs
+- Dijkstra's: For non-negative weights
+- Bellman-Ford: Handles negative weights
+- Floyd-Warshall: All-pairs shortest paths
+
+### Basic Shortest Path
+
+For simple cases, especially with unweighted graphs or when only positive weights are present.
+
+```python
+def shortest_path(graph, start, end):
+    distances = {vertex: float('inf') for vertex in graph.graph}
+    distances[start] = 0
+    predecessors = {vertex: None for vertex in graph.graph}
+
+    pq = [(0, start)]
+    visited = set()
+
+    while pq:
+        current_distance, current_vertex = min(pq)
+        pq.remove((current_distance, current_vertex))
+
+        if current_vertex == end:
+            break
+
+        if current_vertex in visited:
+            continue
+
+        visited.add(current_vertex)
+
+        for neighbor, weight in graph.graph[current_vertex]:
             distance = current_distance + weight
-            
             if distance < distances[neighbor]:
                 distances[neighbor] = distance
                 predecessors[neighbor] = current_vertex
-                heapq.heappush(pq, (distance, neighbor))
+                pq.append((distance, neighbor))
+
+    path = []
+    current = end
+    while current is not None:
+        path.append(current)
+        current = predecessors[current]
+
+    return path[::-1], distances[end]
+```
+
+### Dijkstra's Algorithm
+
+The most efficient algorithm for finding shortest paths when all weights are non-negative.
+
+```python
+def dijkstra(graph, source):
+    distances = {vertex: float('inf') for vertex in graph.graph}
+    distances[source] = 0
+    predecessors = {vertex: None for vertex in graph.graph}
+
+    unvisited = set(graph.graph.keys())
+
+    while unvisited:
+        current = min(unvisited, key=lambda vertex: distances[vertex])
+
+        if distances[current] == float('inf'):
+            break
+
+        unvisited.remove(current)
+
+        for neighbor, weight in graph.graph[current]:
+            if neighbor in unvisited:
+                distance = distances[current] + weight
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    predecessors[neighbor] = current
+
+    return distances, predecessors
+```
+
+#### Key Features
+
+1. **Greedy Approach**
+   - Always selects the vertex with minimum distance
+   - Builds solution incrementally
+
+2. **Optimality**
+   - Guarantees shortest paths when weights are non-negative
+   - Works with both directed and undirected graphs
+
+### Bellman-Ford Algorithm
+
+Handles graphs with negative weights and detects negative cycles.
+
+```python
+def bellman_ford(graph, start):
+    distances = {vertex: float('inf') for vertex in graph.graph}
+    distances[start] = 0
+    predecessors = {vertex: None for vertex in graph.graph}
+    
+    V = len(graph.graph)
+    edges = graph.get_edges()
+    
+    for _ in range(V - 1):
+        for u, v, weight in edges:
+            if distances[u] != float('inf') and distances[u] + weight < distances[v]:
+                distances[v] = distances[u] + weight
+                predecessors[v] = u
+    
+    # Check for negative cycles
+    for u, v, weight in edges:
+        if distances[u] != float('inf') and distances[u] + weight < distances[v]:
+            return None, None, True  # Negative cycle exists
+    
+    return distances, predecessors, False
+```
+
+#### Key Features
+
+1. **Negative Weights**
+   - Can handle negative edge weights
+   - Detects negative cycles
+
+2. **Relaxation**
+   - Performs V-1 iterations of edge relaxation
+   - Additional iteration checks for negative cycles
+
+### Floyd-Warshall Algorithm
+
+Finds shortest paths between all pairs of vertices.
+
+```python
+def floyd_warshall(graph):
+    vertices = graph.get_vertices()
+    distances = {}
+    predecessors = {}
+    
+    # Initialize
+    for u in vertices:
+        distances[u] = {}
+        predecessors[u] = {}
+        for v in vertices:
+            if u == v:
+                distances[u][v] = 0
+            else:
+                weight = graph.get_weight(u, v)
+                distances[u][v] = weight if weight is not None else float('inf')
+                predecessors[u][v] = u if weight is not None else None
+    
+    # Floyd-Warshall
+    for k in vertices:
+        for i in vertices:
+            for j in vertices:
+                if distances[i][k] != float('inf') and distances[k][j] != float('inf'):
+                    if distances[i][j] > distances[i][k] + distances[k][j]:
+                        distances[i][j] = distances[i][k] + distances[k][j]
+                        predecessors[i][j] = predecessors[k][j]
     
     return distances, predecessors
 ```
 
-##### B. Path Reconstruction
+#### Key Features
+
+1. **All-Pairs Shortest Paths**
+   - Finds shortest paths between all vertex pairs
+   - Works with positive and negative weights
+
+2. **Dynamic Programming**
+   - Uses intermediate vertices to find shorter paths
+   - O(V³) complexity but simple implementation
+
+### Comparison and When to Use Each
+
+1. **Basic Shortest Path**
+   - Use for: Simple graphs, unweighted or positive weights
+   - Time: O((V + E) log V) with priority queue
+   - Space: O(V)
+
+2. **Dijkstra's Algorithm**
+   - Use for: Non-negative weights, single source
+   - Time: O((V + E) log V) with priority queue
+   - Space: O(V)
+
+3. **Bellman-Ford**
+   - Use for: Graphs with negative weights
+   - Time: O(VE)
+   - Space: O(V)
+
+4. **Floyd-Warshall**
+   - Use for: All-pairs shortest paths
+   - Time: O(V³)
+   - Space: O(V²)
+
+### Interview Practice Questions
+
+1. **Implementation**
+   Q: Implement Dijkstra's algorithm using a min-heap priority queue.
+
+2. **Edge Cases**
+   Q: Modify Bellman-Ford to return the negative cycle if one exists.
+
+3. **Optimization**
+   Q: How would you optimize Floyd-Warshall for sparse graphs?
+
+4. **Real-world Application**
+   Q: Design a system to find the fastest route between two points in a city, considering traffic conditions.
+
+## Minimum Spanning Trees
+
+### Overview
+
+A Minimum Spanning Tree (MST) is a subset of edges in a weighted, undirected graph that:
+- Connects all vertices
+- Has no cycles
+- Has minimum total edge weight
+
+### Prim's Algorithm
+
+Builds MST by growing a single tree from a starting vertex.
+
 ```python
-def get_shortest_path(predecessors, target):
-    """Reconstruct shortest path from predecessors.
-    
-    Time Complexity: O(V)
-    Space Complexity: O(V)
-    """
-    path = []
-    current = target
-    
-    while current is not None:
-        path.append(current)
-        current = predecessors[current]
-    
-    return path[::-1]
+def prims_mst(graph):
+    if not graph.graph:
+        return [], 0
+
+    start_vertex = next(iter(graph.graph))
+    visited = set()
+    mst_edges = []
+    total_weight = 0
+
+    pq = [(0, start_vertex, None)]
+
+    while pq and len(visited) < len(graph.graph):
+        weight, current, parent = heapq.heappop(pq)
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+
+        if parent is not None:
+            mst_edges.append((parent, current, weight))
+            total_weight += weight
+
+        for neighbor, edge_weight in graph.graph[current]:
+            if neighbor not in visited:
+                heapq.heappush(pq, (edge_weight, neighbor, current))
+
+    return mst_edges, total_weight
 ```
 
-### References
+#### How Prim's Works
 
-1. Implementation Files:
-   - Graph Traversal: `BFS_list_graph.py`, `DFS_list_graph.py`
-   - Cycle Detection: `cycle_detection_and_path_directed_graph.py`, `cycle_detection_and_path_undirected_graph.py`
-   - Topological Sort: `topological_sort.py`, `topological_sort_kahns_algorithm.py`
-   - Minimum Spanning Tree: `minimum_spanning_tree_prims_algorithm.py`, `minimum_cost_spanning_tree_kruskals_algorithm.py`
-   - Shortest Path: `shortest_path_algorithm.py`, `shortest_path_algorithm_dijkstras_algorithm.py`
+1. Start from any vertex
+2. Add the minimum weight edge that connects a visited vertex to an unvisited vertex
+3. Repeat until all vertices are visited
 
-2. Test Files:
-   - Complete Test Suite: `_graph_algorithms_test_run.py`
-   - Test Graphs: `_test_graph.py`
+Example:
+```
+Graph:           MST Construction:
+A --2-- B       Step 1: A --2-- B
+|      |        Step 2: A --2-- B
+4      3        |             
+|      |        4             
+C --1-- D       |             
+                C --1-- D
+```
+
+### Kruskal's Algorithm
+
+Builds MST by selecting edges in order of increasing weight.
+
+```python
+def kruskals_mst_union_find(graph):
+    edges = []
+    for vertex in graph.graph:
+        for neighbor, weight in graph.graph[vertex]:
+            if (neighbor, vertex, weight) not in edges:
+                edges.append((vertex, neighbor, weight))
+    
+    edges.sort(key=lambda x: x[2])
+    
+    uf = UnionFind(graph.graph.keys())
+    
+    mst_edges = []
+    total_weight = 0
+    
+    for vertex1, vertex2, weight in edges:
+        if uf.find(vertex1) != uf.find(vertex2):
+            uf.union(vertex1, vertex2)
+            mst_edges.append((vertex1, vertex2, weight))
+            total_weight += weight
+    
+    return mst_edges, total_weight
+```
+
+#### Union-Find Data Structure
+
+Kruskal's algorithm uses Union-Find for efficient cycle detection:
+
+```python
+class UnionFind:
+    def __init__(self, vertices):
+        self.parent = {vertex: vertex for vertex in vertices}
+        self.rank = {vertex: 0 for vertex in vertices}
+    
+    def find(self, vertex):
+        if self.parent[vertex] != vertex:
+            self.parent[vertex] = self.find(self.parent[vertex])
+        return self.parent[vertex]
+    
+    def union(self, vertex1, vertex2):
+        root1 = self.find(vertex1)
+        root2 = self.find(vertex2)
+        
+        if root1 != root2:
+            if self.rank[root1] < self.rank[root2]:
+                root1, root2 = root2, root1
+            self.parent[root2] = root1
+            if self.rank[root1] == self.rank[root2]:
+                self.rank[root1] += 1
+```
+
+### Comparison
+
+1. **Time Complexity**
+   - Prim's: O(E log V) with binary heap
+   - Kruskal's: O(E log E) for sorting edges
+
+2. **Space Complexity**
+   - Prim's: O(V) for visited set and heap
+   - Kruskal's: O(V) for Union-Find structure
+
+3. **When to Use Each**
+   - Prim's: Dense graphs (E ≈ V²)
+   - Kruskal's: Sparse graphs (E << V²)
+
+### Applications
+
+1. **Network Design**
+   - Computer networks
+   - Electrical grids
+   - Pipeline systems
+
+2. **Clustering**
+   - Hierarchical clustering
+   - Image segmentation
+
+3. **Approximation Algorithms**
+   - Traveling Salesman Problem
+   - Steiner Tree Problem
+
+### Interview Practice Questions
+
+1. **Implementation**
+   Q: Implement Prim's algorithm using an adjacency matrix.
+
+2. **Edge Cases**
+   Q: How would you modify Kruskal's to find the maximum spanning tree?
+
+3. **Optimization**
+   Q: Design an algorithm to update MST when an edge weight changes.
+
+4. **Real-world Application**
+   Q: How would you use MST algorithms to design an optimal network infrastructure?
+
+## Topological Sorting
+
+### Overview
+
+Topological sorting arranges vertices in a directed acyclic graph (DAG) such that for every directed edge (u,v), vertex u comes before v in the ordering. It's crucial for dependency resolution and scheduling.
+
+### DFS-based Approach
+
+Uses depth-first search to build the topological order.
+
+```python
+def topological_sort(graph, start_vertex, visited=None, result=None):
+    if visited is None:
+        visited = set()
+    if result is None:
+        result = []
+
+    visited.add(start_vertex)
+
+    for neighbor in graph.graph[start_vertex]:
+        if neighbor not in visited:
+           topological_sort(graph, neighbor, visited, result)
+
+    result.append(start_vertex)
+
+    if len(result) == len(graph.graph):
+        result.reverse()
+
+    return result
+```
+
+#### How DFS Topological Sort Works
+
+1. Use DFS to explore the graph
+2. Add vertices to result list after exploring all neighbors
+3. Reverse the final list to get topological order
+
+Example:
+```
+DAG:             DFS Path:
+A → B → D        A → B → D
+↓   ↓           A → B → C
+C → E
+
+Topological Order: A, B, C, D, E
+```
+
+### Kahn's Algorithm
+
+Uses in-degree calculation and queue-based approach.
+
+```python
+def kahn_topological_sort(graph):
+    in_degree = {vertex: 0 for vertex in graph.graph}
+    for vertex in graph.graph:
+        for neighbor in graph.graph[vertex]:
+            in_degree[neighbor] = in_degree.get(neighbor, 0) + 1
+
+    queue = deque([vertex for vertex, degree in in_degree.items() if degree == 0])
+    result = []
+
+    while queue:
+        current = queue.popleft()
+        result.append(current)
+
+        for neighbor in graph.graph[current]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    return result
+```
+
+#### How Kahn's Algorithm Works
+
+1. Calculate in-degree for all vertices
+2. Start with vertices having 0 in-degree
+3. Remove vertices and update in-degrees
+4. Repeat until all vertices are processed
+
+### Applications in Scheduling
+
+1. **Build Systems**
+   - Compiling source files in correct order
+   - Resolving library dependencies
+
+2. **Task Scheduling**
+   - Project management
+   - Course prerequisites
+
+3. **Data Processing**
+   - ETL workflows
+   - Data pipeline dependencies
+
+### Time and Space Complexity
+
+1. **DFS-based Approach**
+   - Time: O(V + E)
+   - Space: O(V) for visited set and recursion stack
+
+2. **Kahn's Algorithm**
+   - Time: O(V + E)
+   - Space: O(V) for queue and in-degree map
+
+### When to Use Each
+
+**Use DFS-based when:**
+- Memory efficiency is crucial
+- Recursive solution is acceptable
+- Need to detect cycles
+
+**Use Kahn's Algorithm when:**
+- Need to track progress
+- Prefer iterative approach
+- Want simpler implementation
+
+### Interview Practice Questions
+
+1. **Implementation**
+   Q: Modify the topological sort to detect if the graph has a cycle.
+
+2. **Edge Cases**
+   Q: How would you handle multiple valid topological orderings?
+
+3. **Optimization**
+   Q: Design an algorithm to find the lexicographically smallest topological order.
+
+4. **Real-world Application**
+   Q: How would you use topological sort to schedule tasks with dependencies and deadlines?
+
+## Glossary
+
+### Terms and Definitions
+
+1. **Basic Graph Terms**
+   - Vertex/Node: A point in a graph
+   - Edge: A connection between vertices
+   - Path: A sequence of vertices connected by edges
+   - Cycle: A path that starts and ends at the same vertex
+
+2. **Graph Types**
+   - Directed Graph: Edges have direction
+   - Undirected Graph: Edges have no direction
+   - Weighted Graph: Edges have weights
+   - DAG: Directed Acyclic Graph
+
+3. **Graph Properties**
+   - Connected: All vertices are reachable
+   - Sparse: E << V²
+   - Dense: E ≈ V²
+   - Bipartite: Vertices can be split into two sets
+
+4. **Algorithm Terms**
+   - BFS: Breadth-First Search
+   - DFS: Depth-First Search
+   - MST: Minimum Spanning Tree
+   - SPT: Shortest Path Tree
+
+### Common Notations
+
+1. **Variables**
+   - V: Number of vertices
+   - E: Number of edges
+   - u, v: Vertices
+   - w: Edge weight
+
+2. **Complexity**
+   - O(V): Linear in vertices
+   - O(E): Linear in edges
+   - O(V + E): Linear in graph size
+   - O(V²): Quadratic in vertices
+
+3. **Data Structures**
+   - Adjacency List: Graph[v] = [neighbors]
+   - Adjacency Matrix: Graph[u][v] = weight
+   - Priority Queue: For greedy algorithms
+   - Union-Find: For disjoint sets
+
+4. **Special Values**
+   - ∞ (float('inf')): Unreachable
+   - NULL/None: No path/parent
+   - -1: Invalid/not found
